@@ -1,7 +1,10 @@
 import axios from "axios"
-const url = 'http://119.29.121.40:8081'
-const lurl = 'http://119.29.121.40:9999'
-const vurl = 'http://123.207.1.115:8090'
+// const url = 'http://119.29.121.40:8081'
+// const lurl = 'http://119.29.121.40:9999'
+// const vurl = 'http://123.207.1.115:8090'
+const url = 'http://120.78.0.52:8081'
+const lurl = 'http://120.78.0.52:9999'
+const vurl = 'http://120.78.0.52:8090'
 
 export async function yappAuth(vq){
     return await axios.get(`${vurl}/yApp`,{params:{verifyString: vq}})
