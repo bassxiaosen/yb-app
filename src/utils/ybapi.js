@@ -39,11 +39,20 @@ window.device_back = device_back
 export function gethtml5location_fun() {
     if(browser.versions.android) {
         //android 调用方式
-        window.local_obj.yibanhtml5location();
+        try {
+            window.local_obj.yibanhtml5location();
+        } catch(e) {
+            Toast.info('请在易班中打开')
+        }
     }else if(browser.versions.ios) {
-        window.ios_yibanhtml5location();
+        try {
+            window.ios_yibanhtml5location();
+        } catch(e) {
+            console.log(e)
+            Toast.info('请在易班中打开')
+        }
     }else {
-        onerror('该终端类型暂不支持使用');
+        Toast.info('该设备不支持地理定位')
     }
 }
 
@@ -54,16 +63,37 @@ export function gethtml5location_fun() {
     postion  Json  {"longitude":"经度坐标", "latitude":"纬度坐标", "address":"位置名称"}
  */
 function yibanhtml5location(postion) {
+    console.log('调用', postion)
     // var editedHTML = document.getElementById("yibanhtml5");
     // editedHTML.textContent = postion;
     // Toast.info(postion,3)
-    if(!postion){
-        return Toast.fail('签到失败，请开启地理位置获取',3)
-    }
-    store.dispatch({type:'GETADDRESS',payload:{address: postion, isSigned: true}})
-    let address = store.getState().address
-    console.log(address)
-    Toast.success(`签到成功，当前地址${address}`)
+    // if(!postion){
+    //     return Toast.fail('签到失败，请开启地理位置获取',3)
+    // }
+    // store.dispatch({type:'GETADDRESS',payload:{address: postion, isSigned: true}})
+    // let address = store.getState().address
+    // console.log(address)
+    // Toast.success(`签到成功，当前地址${address}`)
+    return new Promise((resolve, reject) => {
+        console.log('p内部', postion)
+        if(!postion) {
+            Toast.info('定位失败，请打开地理定位')
+            store.dispatch({
+                type: 'SAVE_POSITION',
+                payload: {
+                    position: null
+                }
+            })
+            reject(new Error('开启定位'))
+        } 
+        store.dispatch({
+            type: 'SAVE_POSITION',
+            payload: {
+                position: postion
+            }
+        })
+        resolve(postion)
+    })
 }
 
 /*
